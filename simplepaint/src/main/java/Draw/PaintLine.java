@@ -53,9 +53,9 @@ public class PaintLine {
         int rows = grid.length;
         int cols = grid[0].length;
 
-        System.out.println("\nCanvas : \n");
+        System.out.print("\nCanvas : \n");
         for (int i = 0; i < cols + 1; i++) {
-            System.out.print("_");
+            System.out.print("-");
         }
         System.out.println();
         for (int i = 0; i < rows; i++) {
@@ -70,8 +70,9 @@ public class PaintLine {
             System.out.println();
         }
         for (int i = 0; i < cols + 1; i++) {
-            System.out.print("_");
+            System.out.print("-");
         }
+        System.out.println();
     }
 
     public Point[][] getGridOfCoordinates(int canvasRows, int canvasCols) {
