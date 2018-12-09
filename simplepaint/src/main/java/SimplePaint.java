@@ -9,3 +9,4 @@ public class SimplePaint {
         cmd.getCommandPaint(sis);
     }
 }
+

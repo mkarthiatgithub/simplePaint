@@ -1,5 +1,6 @@
 package CmdParser;
 
+import Draw.CustomException;
 import Draw.PaintLine;
 
 import java.awt.*;
@@ -55,45 +56,50 @@ public class CmdParser {
         System.out.println(HELP_MESSAGE);
         String nextLine = "";
         while (sis.hasNextLine()) {
-            nextLine = sis.nextLine();
-            if (cmdValidator.matchesCanvasRegex(nextLine)) {
-                List<Integer> canvasPoints = getPoints(nextLine.split(" "));
-                output("You entered canVas command = %s", nextLine + "and Points" + canvasPoints.toString());
-                canvasRows = canvasPoints.get(0);
-                canvasCols = canvasPoints.get(1);
-                gridOfCoordinates = paintLine.getGridOfCoordinates(canvasRows, canvasCols);
+            try {
+                nextLine = sis.nextLine();
+                if (cmdValidator.matchesCanvasRegex(nextLine)) {
+                    List<Integer> canvasPoints = getPoints(nextLine.split(" "));
+                    output("You entered canVas command = %s", nextLine + "and Points" + canvasPoints.toString());
+                    canvasRows = canvasPoints.get(0);
+                    canvasCols = canvasPoints.get(1);
+                    gridOfCoordinates = paintLine.getGridOfCoordinates(canvasRows, canvasCols);
 
-            } else if (cmdValidator.matchesLineRegex(nextLine)) {
-                output("You entered command = %s", nextLine);
-                List<Integer> linePoints = getPoints(nextLine.split(" "));
-                List<Point> line = paintLine.findLine(gridOfCoordinates, linePoints.get(0), linePoints.get(1), linePoints.get(2), linePoints.get(3));
-                paintLine.plot(gridOfCoordinates, line);
-            } else if (cmdValidator.matchesReactangleRegex(nextLine)) {
-                output("You entered command R = %s", nextLine);
-                List<Integer> linePoints = getPoints(nextLine.split(" "));
-                int sr = linePoints.get(0); //A 5
-                int sc = linePoints.get(1); //B 10
-                int fr = linePoints.get(2); //C 15
-                int fc = linePoints.get(3); //D 20
-                List<Point> line = paintLine.findLine(gridOfCoordinates, sr, sc, sr, fc);
-                List<Point> line2 = paintLine.findLine(gridOfCoordinates, fr, sc, fr, fc);
-                List<Point> line3 = paintLine.findLine(gridOfCoordinates, sr, sc, fr, sc);
-                List<Point> line4 = paintLine.findLine(gridOfCoordinates, sr, fc, fr, fc);
-                line.addAll(line2);
-                line.addAll(line3);
-                line.addAll(line4);
-                paintLine.plot(gridOfCoordinates, line);
+                } else if (cmdValidator.matchesLineRegex(nextLine)) {
+                    output("You entered command = %s", nextLine);
+                    List<Integer> linePoints = getPoints(nextLine.split(" "));
+                    List<Point> line = paintLine.findLine(gridOfCoordinates, linePoints.get(0), linePoints.get(1), linePoints.get(2), linePoints.get(3));
+                    paintLine.plot(gridOfCoordinates, line);
+                } else if (cmdValidator.matchesReactangleRegex(nextLine)) {
+                    output("You entered command R = %s", nextLine);
+                    List<Integer> linePoints = getPoints(nextLine.split(" "));
+                    int sr = linePoints.get(0); //A 5
+                    int sc = linePoints.get(1); //B 10
+                    int fr = linePoints.get(2); //C 15
+                    int fc = linePoints.get(3); //D 20
+                    List<Point> line = paintLine.findLine(gridOfCoordinates, sr, sc, sr, fc);
+                    List<Point> line2 = paintLine.findLine(gridOfCoordinates, fr, sc, fr, fc);
+                    List<Point> line3 = paintLine.findLine(gridOfCoordinates, sr, sc, fr, sc);
+                    List<Point> line4 = paintLine.findLine(gridOfCoordinates, sr, fc, fr, fc);
+                    line.addAll(line2);
+                    line.addAll(line3);
+                    line.addAll(line4);
+                    paintLine.plot(gridOfCoordinates, line);
 
-            } else {
-                if (EXIT_COMMANDS.contains(nextLine)) {
-                    output("Exit command %s issued, exiting!", nextLine);
-                    System.exit(0);
-                } else if (HELP_COMMANDS.contains(nextLine)) {
-                    output(HELP_MESSAGE);
                 } else {
-                    output("You entered an unknown Command = %s", nextLine);
-                    output(HELP_MESSAGE);
+                    if (EXIT_COMMANDS.contains(nextLine)) {
+                        output("Exit command %s issued, exiting!", nextLine);
+                        System.exit(0);
+                    } else if (HELP_COMMANDS.contains(nextLine)) {
+                        output(HELP_MESSAGE);
+                    } else {
+                        output("You entered an unknown Command = %s", nextLine);
+                        output(HELP_MESSAGE);
+                    }
                 }
+            } catch (CustomException e) {
+                System.out.println("Looks like Line or Rectangle coordinates exceeds canvas size, re-try");
+                e.printStackTrace();
             }
         }
         sis.close();

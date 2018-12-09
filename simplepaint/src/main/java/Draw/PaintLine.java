@@ -8,7 +8,7 @@ public class PaintLine {
     /**
      * Find that belong to line connecting the two points
      **/
-    public List<Point> findLine(Point[][] grid, int x0, int y0, int x1, int y1) {
+    public List<Point> findLine(Point[][] grid, int x0, int y0, int x1, int y1) throws CustomException {
 
         List<Point> line = new ArrayList<Point>();
 
@@ -22,22 +22,27 @@ public class PaintLine {
         int e2;
 
         while (true) {
-            line.add(grid[x0][y0]);
+            try {
+                line.add(grid[x0][y0]);
 
-            if (x0 == x1 && y0 == y1)
-                break;
+                if (x0 == x1 && y0 == y1)
+                    break;
 
-            e2 = 2 * err;
-            if (e2 > -dy) {
-                err = err - dy;
-                x0 = x0 + sx;
-            }
+                e2 = 2 * err;
+                if (e2 > -dy) {
+                    err = err - dy;
+                    x0 = x0 + sx;
+                }
 
-            if (e2 < dx) {
-                err = err + dx;
-                y0 = y0 + sy;
+                if (e2 < dx) {
+                    err = err + dx;
+                    y0 = y0 + sy;
+                }
+            } catch (Exception e) {
+                throw new CustomException("Co Ordinates of the command exceeds Canvas Size");
             }
         }
+
         return line;
     }
 
